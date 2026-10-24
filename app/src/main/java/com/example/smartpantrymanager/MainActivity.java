@@ -17,6 +17,7 @@ import com.example.smartpantrymanager.data.AppDatabase;
 import com.example.smartpantrymanager.data.PantryItem;
 import com.example.smartpantrymanager.data.RecipeSeeder;
 import com.example.smartpantrymanager.ui.PantryAdapter;
+import android.content.Intent;
 
 import java.util.List;
 
@@ -49,12 +50,17 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView rvPantry = findViewById(R.id.rvPantry);
         rvPantry.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PantryAdapter(item ->
-                Toast.makeText(this, "Edit coming in step 5", Toast.LENGTH_SHORT).show());
+        adapter = new PantryAdapter(item -> {
+            // Explicit Intent carrying the tapped item's id -> opens in edit mode
+            Intent intent = new Intent(this, AddEditIngredientActivity.class);
+            intent.putExtra(AddEditIngredientActivity.EXTRA_ITEM_ID, item.getId());
+            startActivity(intent);
+        });
         rvPantry.setAdapter(adapter);
 
         findViewById(R.id.fabAdd).setOnClickListener(v ->
-                Toast.makeText(this, "Add coming in step 5", Toast.LENGTH_SHORT).show());
+                // No extra -> opens in add mode
+                startActivity(new Intent(this, AddEditIngredientActivity.class)));
     }
 
     /**
