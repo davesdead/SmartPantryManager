@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 /**
  * Add mode: opened with no extras, creates a new pantry item.
  * Edit mode: opened with EXTRA_ITEM_ID, loads and updates that item.
@@ -81,6 +81,7 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             updateExpiryLabel();
         });
         findViewById(R.id.btnSave).setOnClickListener(v -> saveItem());
+        findViewById(R.id.btnDelete).setOnClickListener(v -> confirmDelete());
 
         // Read the data passed in by the Intent. -1 means no id was sent, so this is add mode.
         int itemId = getIntent().getIntExtra(EXTRA_ITEM_ID, -1);
@@ -107,6 +108,8 @@ public class AddEditIngredientActivity extends AppCompatActivity {
                 spUnit.setSelection(Math.max(0, Arrays.asList(UNITS).indexOf(item.getUnit())));
                 selectedExpiry = item.getExpiryDate();
                 updateExpiryLabel();
+
+                findViewById(R.id.btnDelete).setVisibility(View.VISIBLE);   // only shown in edit mode
             });
         });
     }
@@ -188,6 +191,28 @@ public class AddEditIngredientActivity extends AppCompatActivity {
                 Toast.makeText(this, isNew ? "Ingredient added" : "Ingredient updated",
                         Toast.LENGTH_SHORT).show();
                 finish();   // back to MainActivity, whose onResume reloads the list
+            });
+        });
+    }
+
+    /** Asks the user to confirm before permanently removing the item. */
+    private void confirmDelete() {
+        if (existingItem == null) return;   // nothing to delete in add mode
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Delete ingredient?")
+                .setMessage("Remove \"" + existingItem.getName() + "\" from your pantry? This cannot be undone.")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Delete", (dialog, which) -> deleteItem())
+                .show();
+    }
+
+    private void deleteItem() {
+        AppDatabase.databaseExecutor.execute(() -> {
+            db.pantryItemDao().delete(existingItem);   // Delete
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Ingredient deleted", Toast.LENGTH_SHORT).show();
+                finish();   // MainActivity's onResume reloads the list without this item
             });
         });
     }
