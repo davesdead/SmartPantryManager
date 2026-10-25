@@ -21,6 +21,9 @@ import android.content.Intent;
 
 import java.util.List;
 
+import android.view.Menu;
+import android.view.MenuItem;
+
 /**
  * Home screen: displays every ingredient currently in the user's pantry.
  */
@@ -81,5 +84,20 @@ public class MainActivity extends AppCompatActivity {
                 tvEmpty.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
             });
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_suggested) {
+            startActivity(new Intent(this, SuggestedRecipesActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
