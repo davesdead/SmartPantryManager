@@ -33,7 +33,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 public class AddEditIngredientActivity extends AppCompatActivity {
 
     public static final String EXTRA_ITEM_ID = "com.example.smartpantrymanager.EXTRA_ITEM_ID";
-    private static final String[] UNITS = {"g", "ml", "pcs"};
+    private static final String[] UNITS = {"g", "kg", "ml", "l", "pcs"};
 
     private AppDatabase db;
     private TextInputLayout tilName, tilQuantity;
