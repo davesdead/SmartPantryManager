@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartpantrymanager.data.AppDatabase;
 import com.example.smartpantrymanager.data.PantryItem;
+import com.example.smartpantrymanager.data.Prefs;
 import com.example.smartpantrymanager.data.RecipeSeeder;
 import com.example.smartpantrymanager.ui.PantryAdapter;
 import android.content.Intent;
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Re-read settings in case they changed while the user was on the Settings screen
+        adapter.setExpirySettings(Prefs.isExpiryAlertsEnabled(this), Prefs.getWarningDays(this));
         loadPantry();
     }
 
@@ -94,8 +97,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_suggested) {
+        int id = item.getItemId();
+        if (id == R.id.action_suggested) {
             startActivity(new Intent(this, SuggestedRecipesActivity.class));
+            return true;
+        } else if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

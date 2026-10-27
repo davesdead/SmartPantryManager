@@ -6,4 +6,9 @@
         android:id="@+id/action_suggested"
         android:title="Suggestions"
         app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="Settings"
+        app:showAsAction="never" />
 </menu>
